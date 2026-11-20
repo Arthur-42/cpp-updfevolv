@@ -6,6 +6,24 @@
 using std::log;
 
 /*
+Taken from QCDNUM 18-00-00, file xpns2p.f, xa2hgp.f, ome.f. 
+
+xpns2p.f contained P2NSPA, P2NSMA, P2NSB and P2NSSA and is a parametrisation 
+of the NNLO non-singlet splitting functions in the MSbar scheme for unpolarized parton 
+densities. The reference is 
+                S. Moch, J. Vermaseren and A. Vogt,
+                hep-ph/0209100 = Nucl. Phys. B646 (2002) 181,
+                hep-ph/0403192 = Nucl. Phys. B688 (2004) 101
+
+xa2hgp.f contained a parametrisation by A. Vogt of the operator 
+matrix element at eq. (B.3) of Buza et al., (BSMN, hep-ph/9612398), with mu_f = m_H
+here, it replaces A2QG
+
+ome.f contaiened the remaining NNLO splitting functions, from (BMSN, hep-ph/9612398).
+They are adapted here for mu_f = m_H as it is fit for the VNFS.
+*/
+
+/*
 g->gg      : P2GGA, P2GGB, A2GG, SOFTG
 q->gq      : P2GQA, A2GQ 
 q_i->q_ig  : P2NSB, P2NSPA, P2NSMA, P2PSA, P2NSSA, A2QQNS, SOFTQ2

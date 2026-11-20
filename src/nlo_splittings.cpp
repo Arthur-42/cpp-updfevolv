@@ -5,6 +5,12 @@
 using std::log;
 
 /*
+Taken from QCDNUM 18-00-00, file pij_nlo.f
+The expressions are from Furmanski and Petronzio NPB175(1980)27
+and Furmanski and Petronzio PLB97(1980)437
+*/
+
+/*
 g->gg      : GG1SFUNC
 q->gq      : FG1SFUNC
 q_i->q_ig  : PP1SFUNC, PM1SFUNC, FF1SFUNC
