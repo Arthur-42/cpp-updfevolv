@@ -47,16 +47,6 @@ class AlphaStrong
         AlphaStrong(int order, double mu20 =8315.25, double as0 =0.118, double cmass =1.47, double bmass =4.5, double tmass =173.);
         // to get a_s at the desired scale
         double running(double mu2);
-
-        /* static methods */
-        // to find the range [x1, x2] in which func(x) = 0
-        static void brackit(double (*func)(double), double& x1, double& x2);
-        // to find a root of func(x) within range [x1, x2]
-        static double bisect(double (*func)(double), double x1, double x2, double epsi);
-        // to determine if a is approximately equal to b, within tolerance
-        static bool lmb_eq(double a, double b, double tol);
-        // to determine if a is approximately equal to b, within tolerance, and with a < b
-        static bool lmb_lt(double a, double b, double tol);
 };
 
 #endif
