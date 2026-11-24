@@ -17,28 +17,28 @@ b->qq      : dqedP0FGA
 namespace lo_splittings
 {
     // 
-    double dqcP0GGS(double z, int nflav);
+    double dqcP0GGS(double z);
     // 
-    double dqcP0GGR(double z, int nflav);
+    double dqcP0GGR(double z);
     // 
-    double dqcP0GGA(double z, int nflav);
+    double dqcP0GGA(double z);
     // 
-    double dqcP0GFA(double z, int nflav);
+    double dqcP0GFA(double z);
     // 
-    double dqcP0FFR(double z, int nflav);
+    double dqcP0FFR(double z);
     // 
-    double dqcP0FFS(double z, int nflav);
+    double dqcP0FFS(double z);
     // 
-    double dqcP0FGA(double z, int nflav);
+    double dqcP0FGA(double z);
     // 
-    double dqedP0GFA(double z, int nflav);
+    double dqedP0GFA(double z);
     // 
-    double dqedP0FFR(double z, int nflav);
+    double dqedP0FFR(double z);
     // 
-    double dqedP0FGA(double z, int nflav);
+    double dqedP0FGA(double z);
 
     // utility : to avoid compiler warning
-    void lo_ignore(const int&);
+    //void lo_ignore(const int&);
 }
 
 #endif
