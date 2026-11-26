@@ -44,7 +44,7 @@ namespace nnlo_splittings
     //
     double A2QG(double z);
     //
-    double A2QQ(double z, int nflav);
+    double A2QQ(double z);
 }
 
 #endif

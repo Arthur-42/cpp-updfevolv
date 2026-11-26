@@ -11,6 +11,10 @@ namespace utilities
     bool lmb_eq(double a, double b, double tol);
     // to determine if a is approximately equal to b, within tolerance, and with a < b
     bool lmb_lt(double a, double b, double tol);
+    // to perform an adaptative Gaussian integration 
+    // author T. JOHANSSON, LUND UNIV. COMPUTER CENTER, 1973
+    // reference THE AUSTRALIAN COMPUTER JOURNAL,3 P.126 AUG. -71
+    double dgadap(double a0, double b0, double (*f)(double), double eps);
 }
 
 #endif 

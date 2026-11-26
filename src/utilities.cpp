@@ -1,8 +1,9 @@
 #include "utilities.h"
 #include <cmath>
 #include <algorithm>
+#include <array>
 
-using std::abs, std::max, std::min, std::log;
+using std::abs, std::max, std::min, std::log, std::sqrt;
 
 // to find the range [x1, x2] in which func(x) = 0
 void utilities::brackit(double (*func)(double), double& x1, double& x2)
@@ -99,4 +100,96 @@ bool utilities::lmb_lt(double a, double b, double tol)
     else eps = abs(tol)*max(abs(a),abs(b));
 
     return (abs(a-b) > eps) && ((a-b)<0);
+}
+
+// to perform an adaptative Gaussian integration 
+// author T. JOHANSSON, LUND UNIV. COMPUTER CENTER, 1973
+// reference THE AUSTRALIAN COMPUTER JOURNAL,3 P.126 AUG. -71
+double dgadap(double a0, double b0, double (*func)(double), double eps)
+/*
+    a0  : lower bound of integration
+    b0  : upper bound of integration
+    func   : pointer to the function of 1 variable to integrate
+    eps : the desired relative accuracy (absolute if the integral is too small)
+*/
+{
+    int Num, Ifu, L, I;
+    double RED, SUM, C, W1, U2, SOLD, SS;
+    std::array<int, 300> N;
+    std::array<double, 300> A, B, F1, F2, F3, S;
+
+    inline double DSUM(double F1F, double F2F, double F3F, double AA, double BB)
+    {
+        return (5./18.) * (BB-AA) * (F1F + 1.6*F2F + F3F); 
+    }
+    
+    if(eps < 1.E-8) eps : 1.E-8;
+
+    RED = 1.3;
+    L = 0;
+    I = 0;
+    SUM = 0.;
+    C = sqrt(15.)/5.;
+    A[0] = A0;
+    A[0] = B0;
+    F1[0] = func(0.5 * (1.+C) * A0 + 0.5 * (1.-C) * B0);
+    F2[0] = func(0.5 * (A0+B0));
+    F3[0] = func(0.5 * (1.-C) * A0 + 0.5 * (1.+C) * B0);
+    IFU = 3
+    S[0] = DSUM(F[0], F[2], F[3], A0, B0);
+
+    loop : 
+        do
+        {
+            L += 1;
+            N[L] = 3;
+            eps = eps * red;
+            A[I+1]  = A[I] + C*(B[I] - A[I]);
+            B[I+1]  = B[I];
+            A[I+2]  = A[I] + B[I] - A[I+1];
+            B[I+2]  = A[I+1];
+            A[I+3]  = A[I];
+            B[I+3]  = A[I+2];
+            W1      = A[I] + (B[I] - A[I])/5.;
+            U2      = 2. * W1 - (A[I] + A[I+2])/2.;
+            F1[I+1] = func(A[I] + B[I] - W1);
+            F2[I+1] = F3[I];
+            F3[I+1] = func(B[I] - A[I+2] + W1);
+            F1[I+2] = func(U2);
+            F2[I+2] = F2[I];
+            F3[I+2] = func(B[I+2] + A[I+2] - U2);
+            F1[I+3] = func(A[I] + A[I+2] - W1);
+            F2[I+3] = F1[I];
+            F3[I+3] = func[W1];
+
+            Ifu = Ifu + 6;
+            if(Ifu > 5000) return SUM; 
+
+            S[I+1] = DSUM(F1[I+1], F2[I+1], F3[I+1], A[I+1], B[I+1]);
+            S[I+2] = DSUM(F1[I+2], F2[I+2], F3[I+2], A[I+2], B[I+2]);
+            S[I+3] = DSUM(F1[I+3], F2[I+3], F3[I+3], A[I+3], B[I+3]);
+            SS     = S[I+1] + S[I+2] + S[I+3];
+
+            I = I + 3;
+            if(I > 300) return SUM; // default error return, should implement error handling
+
+            SOLD = S[I-3];
+        } 
+        while (abs(SOLD - SS) > (eps * (1. + abs(SS)) / 2.));
+    
+        SUM += SS;
+        I = I - 4;
+        N[L] = 0;
+        L = L - 1;
+
+        while (L != 1)
+        {
+            N[L] = N[L] - 1;
+            eps = eps / RED;
+            if(N[L] != 0) goto loop;
+            I = I - 1;
+            L = L - 1;
+        }
+
+        return SUM;
 }

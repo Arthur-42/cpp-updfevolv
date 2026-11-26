@@ -286,7 +286,7 @@ double nnlo_splittings::A2QG(double z)
 }
 
 //
-double nnlo_splittings::A2QQ(double z, int nflav)
+double nnlo_splittings::A2QQ(double z)
 {
     double A0;
     // S_1,2(x) = deb_2(-log(1-x))/2 
