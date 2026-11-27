@@ -44,7 +44,7 @@ class AlphaStrong
     public:
         /* methods */
         // constructor
-        AlphaStrong(int order, double mu20 =8315.25, double as0 =0.118, double cmass =1.47, double bmass =4.5, double tmass =173.);
+        AlphaStrong(int order, double mu20 =8315.25, double as0 =0.118, double cmass =1.27, double bmass =4.19, double tmass =172.6);
         // to get a_s / 2pi at the desired scale
         double running(double mu2);
 };

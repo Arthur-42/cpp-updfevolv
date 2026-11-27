@@ -63,6 +63,39 @@ itype only :
 Note that the remaining initial states are given in 21, 24, 27
 */
 
+// constructor
+SudakovTables::SudakovTables(double qmin, double qmax, double eps, AlphaStrong& alphas, 
+                             int order, int quordering, bool smbosons, double charmmass =1.27, 
+                             double bottommass =4.19, double topmass =172.6, double Wmass =80.36, double Zmass =91.188, 
+                             double Hmass =125., double q0ord =1., double zmaxfixed =0.99)
+/*
+    qmin       : lower scale of the tables
+    qmax       : upper scale of the tables
+    eps        : precision of the integrations
+    alphas     : instance of AlphaStrong (the running coupling)
+    order      : the order of the computations 1: LO; 2: NLO; 3: NNLO
+    quordering : the ordering scheme 0: angular ordering; 1: virtual ordering; 2: no z dependance in a_s(q) 
+    smbosons   : do we add the non-QCD bosons contributions to the branchings
+    [...]mass  : mass of the [...] quark/boson
+    q0ord      : reference scale used for angular or virtual ordering
+    zmaxfixed  : fixed zmax used if quordering = 2
+*/
+{
+    m_order = order;
+    m_qordering = quordering;
+    m_smbosons = smbosons;
+    m_charmmass = charmmass;
+    m_bottommass = bottommass;
+    m_topmass = topmass;
+    m_Wmass = Wmass;
+    m_Zmass = Zmass;
+    m_Hmass = Hmass;
+    m_q0ord = q0ord;
+    m_zmaxfixed = zmaxfixed;
+
+    filltables(qmin, qmax, eps, alphas);
+}
+
 // to fill the sudakov tables
 void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong& alphas)
 /*
