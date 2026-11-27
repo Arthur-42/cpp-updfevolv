@@ -107,7 +107,7 @@ void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong
 {
     double q2min, q2max;
     double x3lmin, x3lmax, x3ldif;
-    double qnow, temp_sudz, temp_sudint;
+    double qinlist, temp_sudz, temp_sudint;
     int nf_light, n_boson;
     //double power = 1. / (static_cast<double>(tablelength - 1.));
 
@@ -115,12 +115,46 @@ void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong
     x3lmax = log(qmax);
     x3ldif = (x3lmax - x3lmin) / (static_cast<double>(tablelength));
 
+    m_scales[0] = q2min;
+    for(int inode = 1; inode < tablelength; inode++)
+    {
+        qinlist = exp(x3lmin + x3ldif * inode);
+        // force first eligible node to heavy quark or boson mass
+        nf_light = 3;
+        if((qinlist >= m_charmmass) && (nf_light != 4)){
+            nf_light = 4;
+            qinlist = m_charmmass;
+        }
+        if((qinlist >= m_bottommass) && (nf_light != 5)){
+            nf_light = 5;
+            qnow = m_bottommass;
+        }
+        if((qinlist >= m_topmass) && (nf_light != 6)){
+            nf_light = 6;
+            qnow = m_topmass;
+        }
+        n_boson = 1;
+        if((qinlist >= m_Wmass) && (n_boson != 3)){
+            n_boson = 3;
+            qnow = m_Wmass;
+        }
+        if((qinlist >= m_Zmass) && (n_boson != 4)){
+            n_boson = 4;
+            qnow = m_Zmass;
+        }
+        if((qinlist >= m_Hmass) && (n_boson != 5)){
+            n_boson = 5;
+            qnow = m_Hmass;
+        }
+
+        m_scales[inode] = qinlist*qinlist;
+    }
+
     for(int itype = 0; itype < 33; itype++)
     {
         q2min = qmin * qmin;
 
         m_sudint[itype][0] = 0.;
-        if(itype == 0) m_scales[0] = q2min; // we only note the scale once
         m_sudmin[itype] = 0.;
         m_sudmax[itype] = -9999999.; // default fake value
 
@@ -129,38 +163,9 @@ void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong
             m_sudz[itype][0] = integrate_splitting(q2max, q2min, itype, eps, alphas);
         }
 
-        for(int inode = 1; inode < tablelength; inode++)
+        for(const double& q2now : m_scales)
         {
-            qnow = exp(x3lmin + x3ldif * inode);
-            // force first eligible node to heavy quark or boson mass
-            nf_light = 3;
-            if((qnow >= m_charmmass) && (nf_light != 4)){
-                nf_light = 4;
-                qnow = m_charmmass;
-            }
-            if((qnow >= m_bottommass) && (nf_light != 5)){
-                nf_light = 5;
-                qnow = m_bottommass;
-            }
-            if((qnow >= m_topmass) && (nf_light != 6)){
-                nf_light = 6;
-                qnow = m_topmass;
-            }
-            n_boson = 1;
-            if((qnow >= m_Wmass) && (n_boson != 3)){
-                n_boson = 3;
-                qnow = m_Wmass;
-            }
-            if((qnow >= m_Zmass) && (n_boson != 4)){
-                n_boson = 4;
-                qnow = m_Zmass;
-            }
-            if((qnow >= m_Hmass) && (n_boson != 5)){
-                n_boson = 5;
-                qnow = m_Hmass;
-            }
-
-            q2max = qnow * qnow;
+            q2max = q2now;
 
             if(itype <= 27){
                 temp_sudz = integrate_splitting(q2max, q2min, itype, eps, alphas);
@@ -225,8 +230,6 @@ void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong
                 if(temp_sudint < m_sudmin[itype]) m_sudmin[itype] = temp_sudint;
                 if(temp_sudint > m_sudmax[itype]) m_sudmax[itype] = temp_sudint;
             }
-
-            if(itype == 0) m_scales[inode] = q2max; // we only note the scale once
         }   
     }
 }
