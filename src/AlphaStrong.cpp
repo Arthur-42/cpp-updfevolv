@@ -44,7 +44,7 @@ AlphaStrong::AlphaStrong(int order, double mu20, double as0, double cmass, doubl
     m_errorflag = false;
 }
 
-// to get a_s at the desired scale
+// to get a_s / 2pi at the desired scale
 double AlphaStrong::running(double mu2)
 /*
     mu2 : the desired scale (squared)
@@ -92,7 +92,8 @@ double AlphaStrong::running(double mu2)
         }
     }
 
-    return asend;
+    // unlike the original, we return a_s / 2pi
+    return asend/(2.*pi);
 }
 
 // to indicate which flavour thresholds are in the way

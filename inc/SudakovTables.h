@@ -44,7 +44,7 @@ class SudakovTables
     /* methods */
     // to fill the sudakov tables
     void filltables(double qmin, double qmax, double eps, AlphaStrong& alphas);
-    //
+    // z times the coupling times the splitting function
     double splitting_integrand(double z, double q, double aijnorm, int branchtype, AlphaStrong& alphas);
     // wrapper to sample splitting_integrand along z following a 1/(1-x) distribution, for the numerical integration
     double sample_integrand_z(double y,double q, double aijnorm, int branchtype, AlphaStrong& alphas);

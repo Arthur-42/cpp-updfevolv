@@ -21,7 +21,7 @@ static const double cos2w = 0.77;  // cos^2(theta_W)
 static const double e2u = 4./9.;   // up quark QED charge squared
 static const double e2d = 1./9.;   // down quark QED charge squared
 static const double t3u = 0.5;     // up quark weak isospin
-static const double t3d = - 0.5;   // down quark weak isospin
+static const double t3d = -0.5;   // down quark weak isospin
 
 /* branchtypes and itype reference
 0  : g      -> g g
@@ -198,7 +198,7 @@ void SudakovTables::filltables(double qmin, double qmax, double eps, AlphaStrong
     }
 }
 
-// 
+// z times the coupling times the splitting function
 double SudakovTables::splitting_integrand(double z, double q, double aijnorm, int branchtype, AlphaStrong& alphas)
 /*
     z          : the splitting variable
