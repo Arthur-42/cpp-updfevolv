@@ -1,8 +1,13 @@
 #ifndef SUDAKOVTABLES_H
 #define SUDAKOVTABLES_H
+#include <array>
 
 // number of grid points
 #define tablelength 64
+
+// alias for the 2d arrays
+template <typename T, std::size_t Row, std::size_t Col>
+using array2d = std::array<std::array<T, Col>, Row>;
 
 class SudakovTables
 {
@@ -27,14 +32,14 @@ class SudakovTables
     double m_zmaxfixed;
 
     // list of the scales at which the grid is evaluated
-    double m_scales[tablelength];
+    std::array<double, tablelength> m_scales;
     // splitting functions integrated along z
-    double m_sudz[33][tablelength];
+    array2d<double, 33, tablelength> m_sudz;
     // full integral in the sudakov form factors
-    double m_sudint[33][tablelength];
+    array2d<double, 33, tablelength> m_sudint;
     // lists of min and max values per type
-    double m_sudmin[33];
-    double m_sudmax[33];
+    std::array<double, 33> m_sudmin;
+    std::array<double, 33> m_sudmax;
 
     /* methods */
     // to fill the sudakov tables

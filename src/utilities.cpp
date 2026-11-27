@@ -1,7 +1,6 @@
 #include "utilities.h"
 #include <cmath>
 #include <algorithm>
-#include <array>
 
 using std::abs, std::max, std::min, std::log, std::sqrt;
 

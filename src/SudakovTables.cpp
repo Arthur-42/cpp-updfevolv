@@ -6,6 +6,7 @@
 #include "utilities.h"
 #include <cmath>
 #include <algorithm>
+#include <array>
 
 using std::sqrt, std::log, std::abs, std::max, std::pow, std::exp;
 namespace lo = lo_splittings;
@@ -402,6 +403,9 @@ double SudakovTables::splitting_integrand(double z, double q, double aijnorm, in
             if(m_smbosons) psplit = lo::dqedP0FGA(z);
             break;
     }
+
+    // Ievol = 1 in the original
+    psplit = psplit * z;
 
     // putting the correct prefactors 
     if(branchtype <= 6){
