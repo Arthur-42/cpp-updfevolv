@@ -1,4 +1,6 @@
 #include "Branchings.h"
+#include "UpdfGrid.h"
+#include "SudakovTables.h"
 #include <cmath>
 
 #define BR_VERBOSE 1
@@ -21,7 +23,6 @@ Branchings::Branchings(double (*starting_pdf)(double), double starting_scale, in
     start_the_chain(&starting_pdf, starting_flavour, kt0_min, kt0_sigma); // vérifier la syntaxe
 }
 
-
 // to generate the starting parton data
 void Branchings::start_the_chain(double (*starting_pdf)(double), int starting_flavour, 
             double kt0_min, double kt0_sigma)
@@ -36,15 +37,18 @@ void Branchings::start_the_chain(double (*starting_pdf)(double), int starting_fl
 {
     double kt0, theta0;
     double xmymin, x0, weigth_x0;
-    double rvec[1];
+    double rvec[2];
+    ranlxd(rvec, 2);
 
     // to draw a gaussian-distributed number using the central limit theorem
     inline double gaussian_number(double mean, double sigma)
     {
-      double rvec[1];
+      double rvec_2[12];
       double sum = 0;
+      ranlxd(rvec_2, 12);
+
       for(int i=0; i<12; i++){
-        sum += ranlxd(rvec, 1); // ranlux doit etre initialise plus tot
+        sum += rvec_2[i]; // ranlux doit etre initialise plus tot
       }
       return mean + sigma * (sum - 6.);
     }
@@ -52,13 +56,13 @@ void Branchings::start_the_chain(double (*starting_pdf)(double), int starting_fl
     // generate intrinsic kt (! different from the original !)
     kt0 = gaussian_number(0., kt0_sigma);
     if(kt0 < kt0_min) kt0 = kt0_min;
-    theta0 = 2*PI * ranlxd(rvec, 1);
+    theta0 = 2*PI * rvec[0];
     // write generated kt to m_parton
     m_parton.ktx = kt0 * cos(theta0);
     m_parton.kty = kt0 * sin(theta0);
 
     // generate x
-    x0 = m_xmin * pow((m_xmax/m_xmin), ranlxd(rvec, 1));
+    x0 = m_xmin * pow((m_xmax/m_xmin), rvec[1]);
     weight_x0 = x0 * log(m_xmax/m_xmin);
     // correct the weight with the starting pdf
     weight_x0 = weight_x0 * starting_pdf(x0);
@@ -70,9 +74,59 @@ void Branchings::start_the_chain(double (*starting_pdf)(double), int starting_fl
     m_parton.flavour = starting_flavour;
 }
 
-
-void Branchings::evolution(&grids)
+// 
+void Branchings::evolution(UpdfGrid& grids)
 /* &grids : reference to the instance of UpdfGrid holding the grids */
 {
     
+}
+
+//
+double Branchings::generate_next_scale(double q2min, int flavour, SudakovTables& stables)
+/*
+
+*/
+{
+    int itype;
+    double q2new;
+
+    switch (flavour)
+    {
+    // gluon initial state
+    case 0:  
+        itype = 28;
+        break;
+    // up type quark initial state
+    case -2: case 2: case -4: case 4: case -6: case 6: 
+        itype = 29;
+        break;
+    // down type quark initial state
+    case -1: case 1: case -3: case 3: case -5: case 5:
+        itype = 30;
+        break;
+    // photon initial state
+    case 7:
+        itype = 31;
+        break;
+    // Z initial state
+    case 8:
+        itype = 32;
+        break;
+    // W+ initial state
+    case 9:
+        itype = 21;
+        break;
+    // W- initial state
+    case 10:
+        itype = 24;
+        break;
+    // H initial state
+    case 11:
+        itype = 27;
+        break;
+    }
+
+    q2new = stables.get_new_scale(q2min, itype);
+
+    return q2new;
 }

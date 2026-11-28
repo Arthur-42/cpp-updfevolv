@@ -3,6 +3,9 @@
 #include <array>
 #include <algorithm>
 
+// to be used for divdifd
+#define INTER 1
+
 using std::min;
 
 namespace utilities
@@ -29,7 +32,7 @@ namespace utilities
     // to perform a tabular interpolation using symmetrically placed argument points
     // original from Kernlib Revision 1.1.1.1  1996/02/15 17:48:36  mclareni
     template <typename T, std::size_t N>
-    double divdifd(const std::array<T, N>& F, const std::array<T, N>& A, int NN, double X, int MM)
+    double divdifd(const std::array<T, N>& F, const std::array<T, N>& A, int NN, double X)
     /*
 
     */
@@ -40,15 +43,15 @@ namespace utilities
         std::array<double,20> TT, DD;
 
         // START.  FIND SUBSCRIPT IX OF X IN ARRAY A.
-        N = NN;
-        M = min(MM, min(N-1, 10));
+        N = NN-1; // C++ arrays of length NN start at 0 and end at NN-1 !
+        M = min(INTER, min(N-1, 10));
         MPLUS = M+1;
         IX = 0;
-        IY = N+1;
+        IY = NN+1;
 
-        if(A(1) > A(N)){
+        if(A(0) > A(N)){
             // SEARCH DECREASING ARGUMENTS
-            do
+            do // we want IX < X < IY
             {
                 MID = (IX+IY)/2;
                 if(X <= A(MID)) IX = MID;
@@ -69,17 +72,17 @@ namespace utilities
 
         // COPY REORDERED INTERPOLATION POINTS INTO (TT(I),DD(I)), SETTING
         // *EXTRA* TO TRUE IF M+2 POINTS TO BE USED.
-        NPTS = M + 2 - M % 2;
+        NPTS = M + 2 - (M % 2);
         IP = 0;
         L = 0;
 
         do
         {
             ISUB = IX+L;
-            if((1 <= ISUB) && (ISUB <= N)){
-                IP = IP+1;
+            if((0 <= ISUB) && (ISUB <= N)){ // check of the validity of the index
                 TT(IP) = A(ISUB);
                 DD(IP) = F(ISUB);
+                IP = IP+1;
             }
             else NPTS = MPLUS;
             L = -L;
@@ -93,12 +96,12 @@ namespace utilities
         // SUPPLEMENTED BY AN EXTRA LINE IF *EXTRA* IS TRUE.
         for(ind = 1; ind <= M; ind++){
             if(EXTRA){
-                ISUB = MPLUS - L;
+                ISUB = MPLUS - ind;
                 DD(M+2) = (DD(M+2) - DD(M)) / (TT(M+2) - TT(ISUB));
             }
             I = MPLUS;
             for(J = ind; J <= M; J++){
-                ISUB = I - L;
+                ISUB = I - ind;
                 DD(I) = (DD(I) - DD(I-1)) / (TT(I) - TT(ISUB));
                 I = I-1;
             }

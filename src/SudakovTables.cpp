@@ -505,7 +505,7 @@ double SudakovTables::sample_integrand_z(double y,double q, double aijnorm, int 
 }
 
 // to integrate a splitting function along z, at set q, using sample_integrand_z
-double integrate_splitting(double q2max, double q2min, int branchtype, double eps, AlphaStrong& alphas)
+double SudakovTables::integrate_splitting(double q2max, double q2min, int branchtype, double eps, AlphaStrong& alphas)
 /*
     q2max      : upper bound of scale squared (in the grid), also the scale at which to evaluate
     q2min      : lower bound of scale squared (in the grid), needed to calculate aijnorm
@@ -526,4 +526,27 @@ double integrate_splitting(double q2max, double q2min, int branchtype, double ep
     };
 
     return util::dgadap(0., 1., &splitting_lmbd, eps);
+}
+
+// to get the scale corresponding to a certain value of a sudakov form factor
+double SudakovTables::get_new_scale(double q2min, int itype)
+/*
+
+*/
+{
+    double R, sudlow, D, stest, q2test;
+    double rvec[1];
+    ranlxd(rvec, 1);
+
+    R = rvec[0];
+    if(R == 0) R = 0.0001; // to be amended
+
+    sudlow = util::divdifd(m_sudint[itype], m_scales, tablelength, q2min); // needs to be checked
+    D = -log(R);
+    stest = D + sudlow;
+    if(stest > m_sudmax[itype]) stest = m_sudmax[itype];
+
+    q2test = util::divdifd(m_scales, m_sudint[itype], tablelength, stest);
+
+    return q2test;
 }
